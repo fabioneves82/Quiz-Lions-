@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Informática, TI, Canva e IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    header, .start-screen, .quiz-screen {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    header {
+      background-color: #00205B;
+      color: #FDB813;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .start-screen {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .start-screen input {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 300px;
+    }
+    .start-screen button {
+      padding: 10px 20px;
+      background: #FDB813;
+      color: #00205B;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .start-screen button:hover {
+      background: #e0a400;
+    }
+    .quiz-screen {
+      display: none;
+    }
+    .question {
+      background: #fff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .question h3 {
+      margin: 0 0 10px;
+    }
+    .question label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .quiz-screen button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background: #00205B;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .quiz-screen button:hover {
+      background: #011840;
+    }
+    .result {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .highlight {
+      background-color: #c8e6c9;
+    }
+    .wrong {
+      background-color: #ffcdd2;
+    }
+    footer {
+      text-align: center;
+      margin: 30px 0;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Quiz de Informática, TI, Canva e Inteligência Artificial</h1>
+  </header>
+  <div class="start-screen" id="startScreen">
+    <h2>Bem-vindo(a)!</h2>
+    <p>Preencha seu nome e email para começar:</p>
+    <input type="text" id="userName" placeholder="Seu nome" required><br>
+    <input type="email" id="userEmail" placeholder="Seu email" required><br>
+    <button onclick="startQuiz()">Iniciar Quiz</button>
+  </div>
+
+  <div class="quiz-screen" id="quizScreen">
+    <form id="quizForm"></form>
+    <button onclick="checkAnswers()">Ver Resultado</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <footer>
+    Desenvolvido por CL Fábio Neves
+  </footer>
+
+  <script>
+    const questions = [
+      {
+        q: "O que significa a sigla 'TI'?",
+        options: ["Tecnologia da Informação", "Técnico de Internet", "Transmissão Instantânea", "Tratamento de Imagem"],
+        answer: 0
+      },
+      {
+        q: "Qual ferramenta online é usada para criação de designs gráficos e apresentações de forma simples?",
+        options: ["Photoshop", "CorelDRAW", "Canva", "Illustrator"],
+        answer: 2
+      },
+      {
+        q: "O que é inteligência artificial?",
+        options: ["Um robô físico", "Uma linguagem de programação", "Tecnologia que simula a inteligência humana", "Um tipo de computador"],
+        answer: 2
+      },
+      {
+        q: "Qual dos itens a seguir é um exemplo de assistente virtual com IA?",
+        options: ["Windows", "Google Chrome", "Alexa", "Photoshop"],
+        answer: 2
+      },
+      {
+        q: "Qual linguagem de marcação é usada para estruturar páginas web?",
+        options: ["HTML", "CSS", "JavaScript", "Python"],
+        answer: 0
+      }
+    ];
+
+    const form = document.getElementById('quizForm');
+    questions.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.id = `question${i}`;
+      div.innerHTML = `<h3>${i + 1}. ${q.q}</h3>` +
+        q.options.map((opt, idx) => `
+          <label><input type="radio" name="q${i}" value="${idx}"> ${opt}</label>
+        `).join('');
+      form.appendChild(div);
+    });
+
+    function startQuiz() {
+      const name = document.getElementById('userName').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      if (name && email) {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+      } else {
+        alert("Por favor, preencha seu nome e email para continuar.");
+      }
+    }
+
+    function checkAnswers() {
+      let score = 0;
+      questions.forEach((q, i) => {
+        const div = document.getElementById(`question${i}`);
+        const inputs = div.querySelectorAll('input');
+        inputs.forEach(input => input.parentElement.classList.remove('highlight', 'wrong'));
+
+        const selected = document.querySelector(`input[name=q${i}]:checked`);
+        if (selected) {
+          const selectedValue = parseInt(selected.value);
+          if (selectedValue === q.answer) {
+            score++;
+            selected.parentElement.classList.add('highlight');
+          } else {
+            selected.parentElement.classList.add('wrong');
+            const correct = inputs[q.answer];
+            correct.parentElement.classList.add('highlight');
+          }
+        } else {
+          const correct = inputs[q.answer];
+          correct.parentElement.classList.add('highlight');
+        }
+      });
+      document.getElementById('result').textContent = `Você acertou ${score} de ${questions.length} perguntas!`;
+    }
+  </script>
+</body>
+</html>
